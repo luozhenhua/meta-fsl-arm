@@ -29,6 +29,6 @@ do_install(){
 	cp -rf ${S}/../scripts ${D}/${libexecdir}/
 }
 
-FILES_${PN} += "${libexecdir} /lib/modules/${KERNEL_VERSION}/asf"
+FILES_${PN} += "${libexecdir}"
 RDEPENDS_${PN} += "ipsec-tools"
 COMPATIBLE_MACHINE = "(ls102xa)"
