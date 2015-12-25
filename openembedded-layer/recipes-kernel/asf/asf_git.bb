@@ -31,3 +31,4 @@ do_install(){
 
 FILES_${PN} += "${libexecdir} /lib/modules/${KERNEL_VERSION}/asf"
 RDEPENDS_${PN} += "ipsec-tools"
+COMPATIBLE_MACHINE = "(ls102xa)"
