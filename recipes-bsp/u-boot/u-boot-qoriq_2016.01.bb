@@ -1,6 +1,8 @@
 require recipes-bsp/u-boot/u-boot.inc
+inherit fsl-u-boot-localversion
 
-DESCRIPTION = "U-Boot provided by Freescale with focus on QorIQ Layerscape1 boards"
+DESCRIPTION = "U-Boot provided by Freescale with focus on QorIQ boards"
+PROVIDES += "u-boot"
 LICENSE = "GPLv2 & BSD-3-Clause & BSD-2-Clause & LGPL-2.0 & LGPL-2.1"
 LIC_FILES_CHKSUM = " \
     file://Licenses/gpl-2.0.txt;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
@@ -10,21 +12,16 @@ LIC_FILES_CHKSUM = " \
     file://Licenses/lgpl-2.1.txt;md5=4fbd65380cdd255951079008b364516c \
 "
 
-SRCBRANCH = "master"
-SRC_URI = "git://git.freescale.com/ppc/sdk/u-boot.git;branch=${SRCBRANCH}"
-SRC_URI += "file://0001-uboot-support-gcc5.patch \
+DEPENDS_append = " change-file-endianess-native dtc-native tcl-native"
+
+SRC_URI = "git://git.freescale.com/ppc/sdk/u-boot.git;branch=sdk-v2.0.x \
     file://fix-build-error-under-gcc6.patch \
 "
-SRCREV = "6ba8eedbcdc4b063f59a63e6288b938af739e8ad"
-
-LOCALVERSION ?= "+ls1"
+SRCREV = "a9b437f50e2051f8d42ec9e1a6df52de4bc00e1e"
 
 S = "${WORKDIR}/git"
 
-inherit fsl-u-boot-localversion
-
-DEPENDS += "change-file-endianess-native dtc-native"
-PROVIDES += "u-boot"
+LOCALVERSION ?= "+fsl"
 
 do_compile_append () {
  unset i j
@@ -51,9 +48,4 @@ do_compile_append () {
 
 PACKAGES += "${PN}-images"
 FILES_${PN}-images += "/boot"
-
-ALLOW_EMPTY_${PN} = "1"
-
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-COMPATIBLE_MACHINE = "(ls102xa)"
-
+COMPATIBLE_MACHINE = "(qoriq)"
