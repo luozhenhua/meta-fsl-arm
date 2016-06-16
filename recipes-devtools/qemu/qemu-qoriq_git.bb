@@ -1,3 +1,5 @@
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+
 require recipes-devtools/qemu/qemu.inc
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=441c28d2cf86e15a37fa47e15a72fbac \
@@ -14,32 +16,27 @@ python() {
             d.appendVar("RREPLACES_%s" % p, p.replace('qemu-qoriq', 'qemu'))
 }
 
-# This means QEMU v2.2.0 with FSL specific patches applied
-PV = "2.2.0+${SRCPV}"
-
-# NOTE: this recipe requires poky's qemu.inc which assumes version 2.3
-# where glx enable config option changed to --enable-opengl. For now we
-# restore it, but we should remove the following lines when upgrading
-# to qemu 2.3:
-PACKAGECONFIG[glx] = "--enable-glx,--disable-glx,mesa"
-
-# remove not supported PACKAGECONFIG by this v2.2.0 based recipe
+# remove not supported PACKAGECONFIG by this recipe
 PACKAGECONFIG[gcrypt] = ""
-PACKAGECONFIG[gnutls] = ""
 PACKAGECONFIG[nettle] = ""
 PACKAGECONFIG[nss] = ""
 
-SRC_URI = "git://git.freescale.com/ppc/sdk/qemu.git;branch=master"
-SRCREV = "00ac004143e9fe46944a1885b04268fcd3a95a3a"
+SRC_URI = "git://git.freescale.com/ppc/sdk/qemu.git;branch=sdk-v2.0.x"
+SRCREV = "4b846e9b2b15660abace52dd27a406af08c4212d"
+
+# add ptest patches
+SRC_URI_append = "\
+    file://add-ptest-in-makefile.patch \
+    file://run-ptest \
+"
 
 S = "${WORKDIR}/git"
 
-QEMU_TARGETS = "arm"
+QEMU_TARGETS_qoriq-arm = "arm"
+QEMU_TARGETS_qoriq_arm64 = "aarch64"
+PACKAGECONFIG_append = " aio libusb"
+
 DISABLE_STATIC = ""
-
-inherit pkgconfig
-
-do_compile_ptest_base[noexec] = "1"
 
 # Append build host pkg-config paths for native target since the host may provide sdl
 do_configure_prepend() {
@@ -63,7 +60,8 @@ do_install_append() {
     if [ -d ${D}${localstatedir}/run ]; then rmdir ${D}${localstatedir}/run; fi
 }
 
-FILES_${PN} += "/usr/share/qemu/"
+FILES_${PN} += "${datadir}/qemu/"
+INSANE_SKIP_${PN} += "dev-deps"
 
 # FIXME: Avoid WARNING due missing patch for native/nativesdk
 BBCLASSEXTEND = ""
