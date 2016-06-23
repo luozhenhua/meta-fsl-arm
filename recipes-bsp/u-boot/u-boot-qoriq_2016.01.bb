@@ -32,6 +32,10 @@ do_compile_append () {
                 j=`expr $j + 1`;
                 if [ $j -eq $i ]; then
                     case "${config}" in
+                        *SECURE*|*SECBOOT*)
+                            :;;
+                        *nor*)
+                            cp ${config}/u-boot-dtb.bin ${config}/u-boot-${type}.${UBOOT_SUFFIX};;
                         *nand* | *sdcard*)
                             cp ${config}/u-boot-with-spl-pbl.bin ${config}/u-boot-${type}.${UBOOT_SUFFIX};;
                         *spi*) 
