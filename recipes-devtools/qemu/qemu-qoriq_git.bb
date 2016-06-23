@@ -3,6 +3,17 @@ require recipes-devtools/qemu/qemu.inc
 LIC_FILES_CHKSUM = "file://COPYING;md5=441c28d2cf86e15a37fa47e15a72fbac \
                     file://COPYING.LIB;endline=24;md5=c04def7ae38850e7d3ef548588159913"
 
+PROVIDES = "qemu"
+
+python() {
+    pkgs = d.getVar('PACKAGES', True).split()
+    for p in pkgs:
+        if 'qemu-qoriq' in p:
+            d.appendVar("RPROVIDES_%s" % p, p.replace('qemu-qoriq', 'qemu'))
+            d.appendVar("RCONFLICTS_%s" % p, p.replace('qemu-qoriq', 'qemu'))
+            d.appendVar("RREPLACES_%s" % p, p.replace('qemu-qoriq', 'qemu'))
+}
+
 # This means QEMU v2.2.0 with FSL specific patches applied
 PV = "2.2.0+${SRCPV}"
 
