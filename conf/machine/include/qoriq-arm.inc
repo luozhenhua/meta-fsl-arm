@@ -3,7 +3,7 @@ require conf/machine/include/soc-family.inc
 # Freescale BSP default providers
 PREFERRED_PROVIDER_u-boot_ls102xa ?= "u-boot-qoriq"
 PREFERRED_PROVIDER_virtual/bootloader_ls102xa ?= "u-boot-qoriq"
-PREFERRED_PROVIDER_virtual/kernel_ls102xa ?= "linux-ls1"
+PREFERRED_PROVIDER_virtual/kernel_ls102xa ?= "linux-qoriq"
 
 # Define the default image type
 IMAGE_CLASSES ?= "image_types_uboot"
